@@ -1,14 +1,20 @@
 workflows:
   ios-app:
-    name: iOS App
+    name: iOSApp
+    max_build_duration: 60
     environment:
-      vars:
-        XCODE_WORKSPACE: "Runner"
-        XCODE_SCHEME: "Runner"
+      flutter: stable
       xcode: latest
       cocoapods: default
     scripts:
-      - xcodebuild build -workspace "$XCODE_WORKSPACE.xcworkspace" -scheme "$XCODE_SCHEME" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+      - flutter packages pub get
+      - find . -name "Podfile" -execdir pod install \;
+      - flutter build ios --debug --no-codesign
     artifacts:
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM 
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - flutter_drive.log
+    publishing:
+      email:
+        recipients:
+          - satoshi.maeda@mail.raven-g.com
