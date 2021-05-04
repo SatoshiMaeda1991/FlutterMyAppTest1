@@ -1,14 +1,15 @@
 workflows:
-  ios-app:
-    name: iOS App
+  my-workflow:
+    name: Test1WorkFlow
+    instance_type: mac_mini
+    max_build_duration: 60
     environment:
       vars:
-        XCODE_WORKSPACE: "Runner"
-        XCODE_SCHEME: "Runner"
+        PUBLIC_ENV_VAR: "value here"
+      flutter: stable
       xcode: latest
-      cocoapods: default
     scripts:
-      - xcodebuild build -workspace "$XCODE_WORKSPACE.xcworkspace" -scheme "$XCODE_SCHEME" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        - name: Build for iOS
+          script: flutter build ios
     artifacts:
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+      - build/**/outputs/**/*.aab
